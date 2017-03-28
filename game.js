@@ -48,7 +48,7 @@ function keysUp(e) {
 
 // set up the player
 var player = {
-
+	// properties
 	size: 35,
 	color: "#E887E5",
 	// put in middle of screen
@@ -94,6 +94,7 @@ function drawPlayer() {
 // update function
 function Update() {
 
+	// circles
 	for(var i = 0; i < fallingCircles.length; i++) {
 		fallingCircles[i].y = fallingCircles[i].y + fallingCircles[i].speed;
 
@@ -104,7 +105,7 @@ function Update() {
 			fallingCircles.splice(i, 1);
 		}
 	}
-	
+	// player
 	if(moveLeft && player.x > 0){
 		player.x -= 7;
 	}
@@ -115,12 +116,12 @@ function Update() {
 
 
 }
-// end of game, resets x, y, and arrays
+// end of game 
 function gamesOver(){
 	gameOver = true;
 }
 
-//resets game, life, and score counters
+// resets game, life, and score 
 function playAgain() {
 	gameOver = false;
 	player.color = "#E887E5";
@@ -141,13 +142,13 @@ function draw(){
 		drawCircles();
 		Update();
 			
-		//score
+		// score
 		ctx.fillStyle = "black";
 		ctx.font = "15px Verdana";
 		ctx.textAlign = "left";
 		ctx.fillText("Score: " + score, 10, 25);
 	
-		//lives
+		// lives
 		ctx.textAlign = "right";
 		ctx.fillText("Lives: " + lives, 500, 25);
 	}
