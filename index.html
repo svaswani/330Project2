@@ -3,8 +3,9 @@
 <head>
 	<title>Falling Object Game!</title>
 	<style>
+		body 
 		{
-			background: #fff;
+			text-align: center;
 		}
 		canvas 
 		{
@@ -18,11 +19,19 @@
 			text-align:center;
 			font-family: Verdana;
 		}
+		.text 
+		{
+			background: #e1e1ea;
+			padding: 5px 10px;
+			display: inline-block;
+		}
 	</style>
 </head>
-<body>
-	<p>Use the left and right arrow keys to move. Avoid the falling objects!</p>
-	<p id = "level"></p>
+<body background="background.jpg">
+	<div class="text">
+		<p>Use the left and right arrow keys to move. Avoid any of the falling objects!</p>
+		<p id = "level"></p>
+	</div>
 	<canvas id = "canvas" width="512" height = "480"></canvas>
 	<script src="game.js"></script>
 </body>
