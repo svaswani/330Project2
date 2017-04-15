@@ -50,10 +50,10 @@ function keysUp(e) {
 var player = {
 	// properties
 	size: 35,
-	color: "#E887E5",
+	//color: "#E887E5",
 	// put in middle of screen
 	x: (canvas.width - 30) / 2,
-	y: canvas.height - 30
+	y: canvas.height - 85
 
 };
 
@@ -84,11 +84,13 @@ function drawCircles() {
 
 // draw player to canvas
 function drawPlayer() {
-	ctx.beginPath();
-	ctx.rect(player.x, player.y, player.size, player.size);
-	ctx.fillStyle = player.color;
-	ctx.fill();
-	ctx.closePath();
+	// ctx.beginPath();
+	// ctx.rect(player.x, player.y, player.size, player.size);
+	// ctx.fillStyle = player.color;
+	// ctx.fill();
+	// ctx.closePath();
+	var img = document.getElementById("toilet");
+	ctx.drawImage(img, player.x, player.y);
 }
 
 function checkCollisions() {
@@ -161,8 +163,8 @@ function draw() {
 		ctx.fillText("Score: " + score, 10, 25);
 
 		// lives
-		ctx.textAlign = "right";
-		ctx.fillText("Lives: " + lives, 500, 25);
+		// ctx.textAlign = "right";
+		// ctx.fillText("Lives: " + lives, 500, 25);
 	}
 	else {
 		ctx.fillStyle = "black";
