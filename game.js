@@ -158,7 +158,7 @@ function draw() {
 
 		// score
 		ctx.fillStyle = "black";
-		ctx.font = "15px Verdana";
+		ctx.font = "20px Dosis";
 		ctx.textAlign = "left";
 		ctx.fillText("Score: " + score, 10, 25);
 
@@ -168,7 +168,7 @@ function draw() {
 	}
 	else {
 		ctx.fillStyle = "black";
-		ctx.font = "25px Verdana";
+		ctx.font = "35px Dosis";
 		ctx.textAlign = "center";
 		ctx.fillText("GAME OVER!", canvas.width / 2, 175);
 
