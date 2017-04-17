@@ -1,3 +1,5 @@
+"use strict";
+
 // set up canvas
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
@@ -12,6 +14,7 @@ var moveRight = false;
 
 // game over state 
 var gameOver = true;
+var paused = false;
 
 var numCircles = 5;
 
@@ -31,10 +34,30 @@ function keysDown(e) {
 	}
 	// space bar to start
 	else if (e.keyCode == 32 && gameOver) {
-		// call playAgain to start the game
-		playAgain();
+		// call play to start the game
+		play(0);
+	}
+	// p key for pausing and resuming 
+	else if (e.keyCode == 80 && !paused) {
+		console.log("p pressed");
+		paused == true;
 	}
 }
+
+function drawPause(s) {
+	score = s;
+
+	ctx.fillStyle = "black";
+	ctx.font = "35px Dosis";
+	ctx.textAlign = "center";
+	ctx.fillText("PAUSED!", canvas.width / 2, 175);
+
+	ctx.font = "20px Dosis";
+	ctx.fillText("PRESS P TO RESUME", canvas.width / 2, 475);
+
+	ctx.fillText("SCORE: " + score, canvas.width / 2, 230);
+}
+
 // if a key is released then stop movement
 function keysUp(e) {
 	if (e.keyCode == 39) {
@@ -42,6 +65,9 @@ function keysUp(e) {
 	}
 	else if (e.keyCode == 37) {
 		moveLeft = false;
+	}
+	else if (e.keyCode == 80) {
+		paused == true;
 	}
 
 }
@@ -136,14 +162,15 @@ function gamesOver() {
 }
 
 // resets game, life, and score 
-function playAgain() {
+function play(s) {
 	gameOver = false;
 	player.color = "#E887E5";
 	level = 1;
-	score = 0;
+	score = s;
 	lives = 3;
 
 }
+
 function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	if (!gameOver) {
@@ -162,18 +189,24 @@ function draw() {
 		ctx.textAlign = "left";
 		ctx.fillText("Score: " + score, 10, 25);
 
+		if (paused) {
+			drawPause(score);
+		}
+
 		// lives
 		// ctx.textAlign = "right";
 		// ctx.fillText("Lives: " + lives, 500, 25);
 	}
+	
+
 	else {
 		ctx.fillStyle = "black";
 		ctx.font = "35px Dosis";
 		ctx.textAlign = "center";
-		ctx.fillText("GAME OVER!", canvas.width / 2, 175);
+		ctx.fillText("WELCOME!", canvas.width / 2, 175);
 
-		ctx.font = "20px Verdana";
-		ctx.fillText("PRESS SPACE TO PLAY", canvas.width / 2, 475);
+		ctx.font = "20px Dosis";
+		ctx.fillText("PRESS SPACE TO PLAY AND P TO PAUSE", canvas.width / 2, 475);
 
 		ctx.fillText("SCORE: " + score, canvas.width / 2, 230);
 	}
