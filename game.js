@@ -17,7 +17,6 @@ window.addEventListener("keydown", function (e) {
 	// left arrow key
 	else if (e.keyCode == 37) {
 		this.moveLeft = true;
-		//console.log('left');
 	}
 });
 window.addEventListener("keyup", function (e) {
@@ -28,7 +27,6 @@ window.addEventListener("keyup", function (e) {
 	// left arrow key
 	else if (e.keyCode == 37) {
 		this.moveLeft = false;
-		//console.log('left');
 	}
 });
 
@@ -52,7 +50,7 @@ app.main = {
 	moveLeft: false,
 	moveRight: false,
 
-	NUM_CIRCLES: 5,
+	NUM_CIRCLES: 2,
 
 	// set up the player
 	player: {
@@ -70,13 +68,11 @@ app.main = {
 	// methods
 	// initializes the game
 	init: function () {
-		console.log("app.main.init() called");
 		// set up canvas
 		this.canvas = document.getElementById("canvas");
 		this.ctx = this.canvas.getContext("2d");
 		this.gameState = this.GAME_STATE.BEGIN;
 		this.update();
-		
 	},
 
 	// update function.
@@ -85,15 +81,15 @@ app.main = {
 
 		var dt = this.calculateDeltaTime();
 
+		this.drawCanvas();
+
 		this.checkCollisions();
 
-		this.drawCanvas();
-		//this.drawCircles(dt);
+		this.drawCircles(dt);
 
-		this.drawCircles();
 		
 
-
+		//this.drawCircles();
 	},
 
 	// draws basic canvas
@@ -106,7 +102,7 @@ app.main = {
 			this.ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 			this.drawPlayer();
-			this.drawCircles();
+			//this.drawCircles();
 
 			// score
 			this.ctx.fillStyle = "black";
@@ -133,7 +129,7 @@ app.main = {
 		var now, fps;
 		now = performance.now();
 		fps = 1000 / (now - this.lastTime);
-		//fps = clamp(fps, 12, 60);
+		fps = Math.max(60, Math.min(fps, 12));
 		this.lastTime = now;
 		return 1 / fps;
 	},
@@ -149,10 +145,10 @@ app.main = {
 	},
 
 	// draws the circles falling
-	drawCircles: function () {
+	drawCircles: function (num) {
 
 		// creates circles
-		for (var i = 0; i < this.NUM_CIRCLES; i++) {
+		for (var i = 0; i < num/4; i++) {
 			this.initializeCircle();
 		}
 
@@ -167,15 +163,14 @@ app.main = {
 		for (var i = 0; i < this.fallingCircles.length; i++) {
 			this.fallingCircles[i].y = this.fallingCircles[i].y + this.fallingCircles[i].speed;
 
-			if (this.fallingCircles[i].y == Math.floor(canvas.height / 2)) {
-				this.initializeCircle();
-			} else if (this.fallingCircles[i].y > canvas.height) {
+			if (this.fallingCircles[i].y > canvas.height) {
 				this.fallingCircles.splice(i, 1);
 			}
 		}
 
 		// player
 		if (this.moveLeft && this.player.x > 0) {
+			console.log('key press');
 			this.player.x -= 7;
 		}
 		if (this.moveRight && this.player.x + this.player.size < this.canvas.width) {
