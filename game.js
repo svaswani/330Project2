@@ -40,12 +40,12 @@ function keysDown(e) {
 	// p key for pausing and resuming 
 	else if (e.keyCode == 80 && paused === false) {
 		console.log("p pressed");
-		paused === true;
+		paused = true;
 		console.log(paused);
 	}
 	else if (e.keyCode == 80 && paused) {
 		console.log("p pressed");
-		paused === false;
+		paused = false;
 		console.log(paused);
 	}
 }
@@ -162,10 +162,6 @@ function Update() {
 
 	else if (paused) {
 		drawPause(score);
-	}
-
-	else if(paused === false) {
-		play(score);
 	}
 
 }
