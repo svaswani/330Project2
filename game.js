@@ -5,6 +5,33 @@
 
 var app = app || {};
 
+window.onload = function () {
+	app.main.init();
+};
+
+window.addEventListener("keydown", function (e) {
+	// right arrow key
+	if (e.keyCode == 39) {
+		this.moveRight = true;
+	}
+	// left arrow key
+	else if (e.keyCode == 37) {
+		this.moveLeft = true;
+		//console.log('left');
+	}
+});
+window.addEventListener("keyup", function (e) {
+	// right arrow key
+	if (e.keyCode == 39) {
+		this.moveRight = false;
+	}
+	// left arrow key
+	else if (e.keyCode == 37) {
+		this.moveLeft = false;
+		//console.log('left');
+	}
+});
+
 app.main = {
 	// properties
 	canvas: undefined,
@@ -47,116 +74,73 @@ app.main = {
 		// set up canvas
 		this.canvas = document.getElementById("canvas");
 		this.ctx = this.canvas.getContext("2d");
-
-
-		// event listeners for keys up and down
-		document.addEventListener("keydown", keysDown, false);
-		document.addEventListener("keyup", keysUp, false);
-
-		// creates circles
-		for (var i = 0; i < numCircles; i++) {
-			this.initializeCircle();
-		}
-
+		this.gameState = this.GAME_STATE.BEGIN;
 		this.update();
-
+		
 	},
 
-	// update function
+	// update function.
 	update: function () {
 		this.animationID = requestAnimationFrame(this.update.bind(this));
 
-		this.drawCircles(dt);
-		// circles
-		for (var i = 0; i < this.fallingCircles.length; i++) {
-			this.fallingCircles[i].y = this.fallingCircles[i].y + this.fallingCircles[i].speed;
+		var dt = this.calculateDeltaTime();
 
-			if (fallingCircles[i].y == Math.floor(canvas.height / 2)) {
-				initializeCircle();
-			} else if (fallingCircles[i].y > canvas.height) {
-				fallingCircles.splice(i, 1);
-			}
-		}
-		// player
-		if (moveLeft && player.x > 0) {
-			player.x -= 7;
-		}
-		if (moveRight && player.x + player.size < canvas.width) {
-			player.x += 7;
-		}
+		this.checkCollisions();
 
-		checkCollisions();
+		this.drawCanvas();
+		//this.drawCircles(dt);
+
+		this.drawCircles();
+		
+
 
 	},
 
-	draw: function () {
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		if (!gameOver) {
+	// draws basic canvas
+	drawCanvas: function () {
+		this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+		if (this.gameState != this.GAME_STATE.END) {
 
 			// background color
-			ctx.fillStyle = "#B3B3B3";
-			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			this.ctx.fillStyle = "#B3B3B3";
+			this.ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-			drawPlayer();
-			drawCircles();
-			Update();
+			this.drawPlayer();
+			this.drawCircles();
 
 			// score
-			ctx.fillStyle = "black";
-			ctx.font = "20px Dosis";
-			ctx.textAlign = "left";
-			ctx.fillText("Score: " + score, 10, 25);
-
-			// lives
-			// ctx.textAlign = "right";
-			// ctx.fillText("Lives: " + lives, 500, 25);
+			this.ctx.fillStyle = "black";
+			this.ctx.font = "20px Dosis";
+			this.ctx.textAlign = "left";
+			this.ctx.fillText("Score: " + this.score, 10, 25);
 		}
 		else {
-			ctx.fillStyle = "black";
-			ctx.font = "35px Dosis";
-			ctx.textAlign = "center";
-			ctx.fillText("GAME OVER!", canvas.width / 2, 175);
+			this.ctx.fillStyle = "black";
+			this.ctx.font = "35px Dosis";
+			this.ctx.textAlign = "center";
+			this.ctx.fillText("GAME OVER!", this.canvas.width / 2, 175);
 
-			ctx.font = "20px Verdana";
-			ctx.fillText("PRESS SPACE TO PLAY", canvas.width / 2, 475);
+			this.ctx.font = "20px Verdana";
+			this.ctx.fillText("PRESS SPACE TO PLAY", this.canvas.width / 2, 475);
 
-			ctx.fillText("SCORE: " + score, canvas.width / 2, 230);
+			this.ctx.fillText("SCORE: " + this.score, this.canvas.width / 2, 230);
 		}
 		document.getElementById("level").innerHTML = "Level: " + level;
-
 	},
 
-	// when key is pressed down, move
-	keysDown: function (e) {
-		// right arrow key
-		if (e.keyCode == 39) {
-			this.moveRight = true;
-		}
-		// left arrow key
-		else if (e.keyCode == 37) {
-			this.moveLeft = true;
-			console.log('left');
-		}
-		// space bar to start
-		else if (e.keyCode == 32 && gameOver) {
-			// call playAgain to start the game
-			playAgain();
-		}
-	},
-
-	// if a key is released then stop movement
-	keysUp: function (e) {
-		if (e.keyCode == 39) {
-			moveRight = false;
-		}
-		else if (e.keyCode == 37) {
-			moveLeft = false;
-		}
+	// calculate how much time has passed
+	calculateDeltaTime: function () {
+		var now, fps;
+		now = performance.now();
+		fps = 1000 / (now - this.lastTime);
+		//fps = clamp(fps, 12, 60);
+		this.lastTime = now;
+		return 1 / fps;
 	},
 
 	// creates falling circles
 	initializeCircle: function () {
-		fallingCircles.push({
+		this.fallingCircles.push({
 			x: Math.random() * canvas.width,
 			y: 0,
 			speed: Math.floor((Math.random() + 1) * 3),
@@ -165,42 +149,66 @@ app.main = {
 	},
 
 	// draws the circles falling
-	drawCircles: function (num) {
-		for (var i = 0; i < fallingCircles.length; i++) {
-			ctx.beginPath();
-			ctx.arc(fallingCircles[i].x, fallingCircles[i].y, 5, 0, 2 * Math.PI);
-			ctx.fillStyle = fallingCircles[i].color[Math.floor(Math.random() * 3)];
-			ctx.fill();
-			ctx.stroke();
+	drawCircles: function () {
+
+		// creates circles
+		for (var i = 0; i < this.NUM_CIRCLES; i++) {
+			this.initializeCircle();
+		}
+
+		for (var i = 0; i < this.fallingCircles.length; i++) {
+			this.ctx.beginPath();
+			this.ctx.arc(this.fallingCircles[i].x, this.fallingCircles[i].y, 5, 0, 2 * Math.PI);
+			this.ctx.fillStyle = this.fallingCircles[i].color[Math.floor(Math.random() * 3)];
+			this.ctx.fill();
+			this.ctx.stroke();
+		}
+		// circles
+		for (var i = 0; i < this.fallingCircles.length; i++) {
+			this.fallingCircles[i].y = this.fallingCircles[i].y + this.fallingCircles[i].speed;
+
+			if (this.fallingCircles[i].y == Math.floor(canvas.height / 2)) {
+				this.initializeCircle();
+			} else if (this.fallingCircles[i].y > canvas.height) {
+				this.fallingCircles.splice(i, 1);
+			}
+		}
+
+		// player
+		if (this.moveLeft && this.player.x > 0) {
+			this.player.x -= 7;
+		}
+		if (this.moveRight && this.player.x + this.player.size < this.canvas.width) {
+			this.player.x += 7;
 		}
 	},
 
 	// draw player to canvas
 	drawPlayer: function () {
 		var img = document.getElementById("toilet");
-		ctx.drawImage(img, player.x, player.y);
+		this.ctx.drawImage(img, this.player.x, this.player.y);
 	},
 
 	// check for collisions between player and falling circles
 	checkCollisions: function () {
-		for (var i = 0; i < fallingCircles.length; i++) {
-			if (player.x < fallingCircles[i].x + 5 &&
-				player.x + player.size > fallingCircles[i].x &&
-				player.y < fallingCircles[i].y + 5 &&
-				player.size + player.y > fallingCircles[i].y) {
-				score += 10;
-				fallingCircles.splice(i, 1);
+		for (var i = 0; i < this.fallingCircles.length; i++) {
+			if (this.player.x < this.fallingCircles[i].x + 5 &&
+				this.player.x + this.player.size > this.fallingCircles[i].x &&
+				this.player.y < this.fallingCircles[i].y + 5 &&
+				this.player.size + this.player.y > this.fallingCircles[i].y) {
+				this.score += 10;
+				this.fallingCircles.splice(i, 1);
 			}
 		}
 	},
 
 	// resets game, life, and score 
 	playAgain: function () {
-		gameOver = false;
-		player.color = "#E887E5";
-		level = 1;
-		score = 0;
-		lives = 3;
+		//gameOver = false;
+		this.player.color = "#E887E5";
+		this.level = 1;
+		this.score = 0;
+		this.lives = 3;
 
 	}
 };
