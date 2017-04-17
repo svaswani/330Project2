@@ -38,9 +38,15 @@ function keysDown(e) {
 		play(0);
 	}
 	// p key for pausing and resuming 
-	else if (e.keyCode == 80 && !paused) {
+	else if (e.keyCode == 80 && paused === false) {
 		console.log("p pressed");
-		paused == true;
+		paused === true;
+		console.log(paused);
+	}
+	else if (e.keyCode == 80 && paused) {
+		console.log("p pressed");
+		paused === false;
+		console.log(paused);
 	}
 }
 
@@ -65,9 +71,6 @@ function keysUp(e) {
 	}
 	else if (e.keyCode == 37) {
 		moveLeft = false;
-	}
-	else if (e.keyCode == 80) {
-		paused == true;
 	}
 
 }
@@ -135,25 +138,35 @@ function checkCollisions() {
 // update function
 function Update() {
 
-	// circles
-	for (var i = 0; i < fallingCircles.length; i++) {
-		fallingCircles[i].y = fallingCircles[i].y + fallingCircles[i].speed;
+	if(!paused) {
+		// circles
+		for (var i = 0; i < fallingCircles.length; i++) {
+			fallingCircles[i].y = fallingCircles[i].y + fallingCircles[i].speed;
 
-		if (fallingCircles[i].y == Math.floor(canvas.height / 2)) {
-			initializeCircle();
-		} else if (fallingCircles[i].y > canvas.height) {
-			fallingCircles.splice(i, 1);
+			if (fallingCircles[i].y == Math.floor(canvas.height / 2)) {
+				initializeCircle();
+			} else if (fallingCircles[i].y > canvas.height) {
+				fallingCircles.splice(i, 1);
+			}
 		}
-	}
-	// player
-	if (moveLeft && player.x > 0) {
-		player.x -= 7;
-	}
-	if (moveRight && player.x + player.size < canvas.width) {
-		player.x += 7;
+		// player
+		if (moveLeft && player.x > 0) {
+			player.x -= 7;
+		}
+		if (moveRight && player.x + player.size < canvas.width) {
+			player.x += 7;
+		}
+
+		checkCollisions();
 	}
 
-	checkCollisions();
+	else if (paused) {
+		drawPause(score);
+	}
+
+	else if(paused === false) {
+		play(score);
+	}
 
 }
 // end of game 
@@ -164,7 +177,7 @@ function gamesOver() {
 // resets game, life, and score 
 function play(s) {
 	gameOver = false;
-	player.color = "#E887E5";
+	paused = false;
 	level = 1;
 	score = s;
 	lives = 3;
@@ -188,10 +201,6 @@ function draw() {
 		ctx.font = "20px Dosis";
 		ctx.textAlign = "left";
 		ctx.fillText("Score: " + score, 10, 25);
-
-		if (paused) {
-			drawPause(score);
-		}
 
 		// lives
 		// ctx.textAlign = "right";
