@@ -3,16 +3,16 @@
 
 "use strict";
 
-var app = app || { };
+var app = app || {};
 
-app.myKeys = function() {
-    
+app.myKeys = function () {
+
     var myKeys = {};
 
     myKeys.KEYBOARD = Object.freeze({
-        "KEY_LEFT": 37, 
-        "KEY_UP": 38, 
-        "KEY_RIGHT": 39, 
+        "KEY_LEFT": 37,
+        "KEY_UP": 38,
+        "KEY_RIGHT": 39,
         "KEY_DOWN": 40,
         "KEY_SPACE": 32,
         "KEY_SHIFT": 16,
@@ -28,31 +28,14 @@ app.myKeys = function() {
 
     // event listeners
     window.addEventListener("keydown", function (e) {
-        // right arrow key
-        if (e.keyCode == 39) {
-            //console.log("keydown=" + e.keyCode);
-            myKeys.keydown[e.keyCode] = true;
-        }
-        // left arrow key
-        else if (e.keyCode == 37) {
-            console.log("left");
-            //console.log("keydown=" + e.keyCode);
-            myKeys.keydown[e.keyCode] = true;
-        }
+
+        myKeys.keydown[e.keyCode] = true;
+
     });
     window.addEventListener("keyup", function (e) {
-        // right arrow key
-        if (e.keyCode == 39) {
-            //this.moveRight = false;
-            //console.log("keyup=" + e.keyCode);
-            myKeys.keydown[e.keyCode] = false;
-        }
-        // left arrow key
-        else if (e.keyCode == 37) {
-            //this.moveLeft = false;
-            //console.log("keyup=" + e.keyCode);
-            myKeys.keydown[e.keyCode] = false;
-        }
+
+        myKeys.keydown[e.keyCode] = false;
+
     });
 
     return myKeys;

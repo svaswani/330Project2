@@ -25,8 +25,10 @@ app.main = {
 		DEFAULT: 1,
 		ROUND_OVER: 2,
 		END: 3,
+		PAUSED: 4
 	}),
 	gameState: undefined,
+	paused: false,
 
 	moveLeft: false,
 	moveRight: false,
@@ -53,6 +55,7 @@ app.main = {
 		this.canvas = document.getElementById("canvas");
 		this.ctx = this.canvas.getContext("2d");
 		this.gameState = this.GAME_STATE.BEGIN;
+
 		this.myKeys = app.myKeys;
 		this.update();
 	},
@@ -63,14 +66,20 @@ app.main = {
 
 		var dt = this.calculateDeltaTime();
 
-		this.drawCanvas();
+		console.log(this.paused);
 
-		this.checkCollisions();
+		if(this.paused){
+			this.drawPause();
+			return;
+		}
 
-		this.drawCircles(dt);
+		this.drawCanvas(dt);
 
-		// 
-		if(this.myKeys.keydown[this.myKeys.KEYBOARD.KEY_LEFT]) {
+		this.checkCollisions(dt);
+
+		//this.drawCircles(dt);
+
+		if (this.myKeys.keydown[this.myKeys.KEYBOARD.KEY_LEFT]) {
 			this.moveLeft = true;
 		}
 
@@ -78,10 +87,10 @@ app.main = {
 			this.moveLeft = false;
 		}
 
-		if(this.myKeys.keydown[this.myKeys.KEYBOARD.KEY_RIGHT]) {
+		if (this.myKeys.keydown[this.myKeys.KEYBOARD.KEY_RIGHT]) {
 			this.moveRight = true;
 		}
-		
+
 		else {
 			this.moveRight = false;
 		}
@@ -90,23 +99,59 @@ app.main = {
 	},
 
 	// draws basic canvas
-	drawCanvas: function () {
+	drawCanvas: function (num) {
 		this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+
 		if (this.gameState != this.GAME_STATE.END) {
 
 			// background color
 			this.ctx.fillStyle = "#B3B3B3";
 			this.ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-			this.drawPlayer();
-			//this.drawCircles();
-
 			// score
 			this.ctx.fillStyle = "black";
 			this.ctx.font = "20px Dosis";
 			this.ctx.textAlign = "left";
 			this.ctx.fillText("Score: " + this.score, 10, 25);
+
+			if (this.gameState == this.GAME_STATE.BEGIN) {
+				this.ctx.textAlign = "center";
+				this.ctx.font = "20px Verdana";
+				this.ctx.fillText("PRESS SPACE TO PLAY", this.canvas.width / 2, 475);
+				if (this.myKeys.keydown[this.myKeys.KEYBOARD.KEY_SPACE]) {
+					this.gameState = this.GAME_STATE.DEFAULT;
+				}
+			}
+
+			if (this.gameState == this.GAME_STATE.DEFAULT) {
+				this.drawPlayer();
+				this.drawCircles(num);
+
+				if (this.myKeys.keydown[this.myKeys.KEYBOARD.KEY_PAUSE] && !this.paused) {
+					this.pauseGame();
+					this.gameState = this.GAME_STATE.PAUSED;
+				}
+
+			}
+
+			if (this.gameState == this.GAME_STATE.PAUSED) {
+				this.drawPause();
+				if (this.myKeys.keydown[this.myKeys.KEYBOARD.KEY_PAUSE] && this.paused) {
+					this.resume();
+					this.gameState = this.GAME_STATE.DEFAULT;
+				}
+			}
+
+			if (this.gameState == this.GAME_STATE.ROUND_OVER) {
+				this.ctx.save();
+				this.ctx.fillText("SCORE: " + this.score, this.canvas.width / 2, 230);
+				this.ctx.fillText("PRESS SPACE FOR NEXT LEVEL", this.canvas.width / 2, 260);
+				if (this.myKeys.keydown[this.myKeys.KEYBOARD.KEY_SPACE]) {
+					this.gameState = this.GAME_STATE.BEGIN;
+				}
+			}
 		}
+
 		else {
 			this.ctx.fillStyle = "black";
 			this.ctx.font = "35px Dosis";
@@ -118,6 +163,7 @@ app.main = {
 
 			this.ctx.fillText("SCORE: " + this.score, this.canvas.width / 2, 230);
 		}
+
 		document.getElementById("level").innerHTML = "Level: " + level;
 	},
 
@@ -145,7 +191,7 @@ app.main = {
 	drawCircles: function (num) {
 
 		// creates circles
-		for (var i = 0; i < num/4; i++) {
+		for (var i = 0; i < num / 4; i++) {
 			this.initializeCircle();
 		}
 
@@ -203,6 +249,30 @@ app.main = {
 		this.level = 1;
 		this.score = 0;
 		this.lives = 3;
+	},
 
+	pauseGame: function () {
+		this.paused = true;
+		cancelAnimationFrame(this.animationID);
+		this.update();
+	},
+
+	resume: function () {
+		cancelAnimationFrame(this.animationID);
+		this.paused = false;
+		this.update();
+	},
+	drawPause: function () {
+		this.ctx.save();
+		this.ctx.fillStyle = "black";
+		this.ctx.font = "35px Dosis";
+		this.ctx.textAlign = "center";
+		this.ctx.fillText("PAUSED!", this.canvas.width / 2, 175);
+
+		this.ctx.font = "20px Dosis";
+		this.ctx.fillText("PRESS P TO RESUME", this.canvas.width / 2, 475);
+
+		this.ctx.fillText("SCORE: " + this.score, this.canvas.width / 2, 230);
+		this.ctx.restore();
 	}
 };
