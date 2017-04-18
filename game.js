@@ -15,6 +15,7 @@ app.main = {
 	canvas: undefined,
 	ctx: undefined,
 	myKeys: undefined,
+	bgAudio: undefined,
 
 	lives: 3,
 	score: 0,
@@ -57,6 +58,8 @@ app.main = {
 		this.gameState = this.GAME_STATE.BEGIN;
 
 		this.myKeys = app.myKeys;
+		this.bgAudio = document.querySelector("#bgAudio");
+		bgAudio.volume = 0.25;
 		this.update();
 	},
 
@@ -70,6 +73,7 @@ app.main = {
 
 		this.checkCollisions(dt);
 
+		bgAudio.play();
 
 		// checks for keypresses
 		if (this.myKeys.keydown[this.myKeys.KEYBOARD.KEY_LEFT]) {
@@ -134,7 +138,7 @@ app.main = {
 				}
 
 				// checks for round over
-				if (this.score == this.level*10) {
+				if (this.score == this.level*100) {
 					this.gameState = this.GAME_STATE.ROUND_OVER
 				}
 			}

@@ -28,6 +28,9 @@
 			padding: 5px 10px;
 			display: inline-block;
 		}
+		#audioControls{
+			display: none;
+		}
 	</style>
 </head>
 
@@ -38,6 +41,10 @@
 	</div>
 	<canvas id="canvas" width="512" height="480"></canvas>
 	<img id="toilet" style="display: none;" src="playerToilet.png">
+	<section id="audioControls">
+		<audio id="bgAudio" src="bensound-jazzcomedy.mp3" controls loop></audio>
+		<audio id="effectAudio" controls></audio>
+	</section>
 	<script src="game.js"></script>
 	<script src="keys.js"></script>
 </body>
