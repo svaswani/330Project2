@@ -7,8 +7,8 @@ var app = app || {};
 
 window.onload = function () {
 	app.main.init();
-};
 
+};
 
 app.main = {
 	// properties
@@ -56,10 +56,11 @@ app.main = {
 		this.canvas = document.getElementById("canvas");
 		this.ctx = this.canvas.getContext("2d");
 		this.gameState = this.GAME_STATE.BEGIN;
-
 		this.myKeys = app.myKeys;
 		this.bgAudio = document.querySelector("#bgAudio");
 		bgAudio.volume = 0.25;
+		this.initializeCircle();
+		this.initializeCircle();
 		this.update();
 	},
 
@@ -128,7 +129,6 @@ app.main = {
 				// checks for pause 
 				if (this.myKeys.keydown[this.myKeys.KEYBOARD.KEY_PAUSE] && !this.paused) {
 					this.pauseGame();
-					this.gameState = this.GAME_STATE.PAUSED;
 					return;
 				}
 
@@ -148,7 +148,6 @@ app.main = {
 				this.drawPause();
 				if (this.myKeys.keydown[this.myKeys.KEYBOARD.KEY_SPACE] && this.paused) {
 					this.resume();
-					this.gameState = this.GAME_STATE.DEFAULT;
 					return;
 				}
 
@@ -164,6 +163,8 @@ app.main = {
 				if (this.myKeys.keydown[this.myKeys.KEYBOARD.KEY_SPACE]) {
 					//this.resume();
 					this.NUM_CIRCLES++;
+					// creates circles
+					this.initializeCircle();
 					this.gameState = this.GAME_STATE.DEFAULT;
 					this.nextLevel();
 				}
@@ -204,6 +205,7 @@ app.main = {
 
 	// creates falling circles
 	initializeCircle: function () {
+		// console.log("ADDING ONE CIRCLE");
 		this.fallingCircles.push({
 			x: Math.random() * canvas.width,
 			y: 0,
@@ -215,8 +217,7 @@ app.main = {
 	// draws the circles falling
 	drawCircles: function (num) {
 
-		// creates circles
-		this.initializeCircle();
+		console.log(this.fallingCircles.length);
 
 		for (var i = 0; i < this.NUM_CIRCLES; i++) {
 			this.ctx.beginPath();
@@ -231,6 +232,7 @@ app.main = {
 			this.fallingCircles[i].y = this.fallingCircles[i].y + this.fallingCircles[i].speed;
 			if (this.fallingCircles[i].y > canvas.height) {
 				this.fallingCircles.splice(i, 1);
+				this.initializeCircle();
 				this.lives--;
 			}
 		}
@@ -260,6 +262,7 @@ app.main = {
 				this.player.size + this.player.y > this.fallingCircles[i].y) {
 				this.score += 10;
 				this.fallingCircles.splice(i, 1);
+				this.initializeCircle();
 			}
 		}
 	},
@@ -268,6 +271,9 @@ app.main = {
 	playAgain: function () {
 		for(var i = this.fallingCircles.length; i >0 ;i--){
 			this.fallingCircles.pop();
+		}
+		for(var i = this.NUM_CIRCLES; i > 0; i--) {
+			this.initializeCircle();
 		}
 		this.player.color = "#E887E5";
 		this.level = 1;
@@ -278,6 +284,9 @@ app.main = {
 	nextLevel: function () {
 		for(var i = this.fallingCircles.length; i >0 ;i--){
 			this.fallingCircles.pop();
+		}
+		for(var i = this.NUM_CIRCLES; i > 0; i--) {
+			this.initializeCircle();
 		}
 		this.player.color = "#E887E5";
 		this.level++;
@@ -290,6 +299,7 @@ app.main = {
 		this.paused = true;
 		cancelAnimationFrame(this.animationID);
 		this.update();
+		this.gameState = this.GAME_STATE.PAUSED;
 	},
 
 	// resume the game
@@ -297,6 +307,7 @@ app.main = {
 		cancelAnimationFrame(this.animationID);
 		this.paused = false;
 		this.update();
+		this.gameState = this.GAME_STATE.DEFAULT;
 	},
 
 	// draw pause screen
