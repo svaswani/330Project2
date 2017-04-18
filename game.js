@@ -134,10 +134,9 @@ app.main = {
 				}
 
 				// checks for round over
-				if (this.score == 10) {
+				if (this.score == this.level*10) {
 					this.gameState = this.GAME_STATE.ROUND_OVER
 				}
-
 			}
 
 			// if the game is paused, draw the pause screen and enable resuming
@@ -154,15 +153,16 @@ app.main = {
 			// if the round is over, continue to next level
 			if (this.gameState == this.GAME_STATE.ROUND_OVER) {
 				//this.pauseGame();
-				this.ctx.fillText("SCORE: " + this.score, this.canvas.width / 2, 230);
-				this.ctx.fillText("PRESS SPACE FOR NEXT LEVEL", this.canvas.width / 2, 260);
+				this.ctx.save();
+				this.ctx.textAlign = "center";
+				this.ctx.fillText("SCORE: " + this.score, this.canvas.width/2, 230);
+				this.ctx.fillText("PRESS SPACE FOR NEXT LEVEL", this.canvas.width/2, 260);
 				if (this.myKeys.keydown[this.myKeys.KEYBOARD.KEY_SPACE]) {
 					//this.resume();
-					this.gameState = this.GAME_STATE.DEFAULT;
 					this.NUM_CIRCLES++;
-					return;
+					this.gameState = this.GAME_STATE.DEFAULT;
+					this.nextLevel();
 				}
-				return;
 			}
 		}
 
@@ -262,11 +262,23 @@ app.main = {
 
 	// resets game, life, and score 
 	playAgain: function () {
-		//gameOver = false;
+		for(var i = this.fallingCircles.length; i >0 ;i--){
+			this.fallingCircles.pop();
+		}
 		this.player.color = "#E887E5";
 		this.level = 1;
 		this.score = 0;
 		this.lives = 3;
+	},
+
+	nextLevel: function () {
+		for(var i = this.fallingCircles.length; i >0 ;i--){
+			this.fallingCircles.pop();
+		}
+		this.player.color = "#E887E5";
+		this.level++;
+		this.score = 0;
+		this.lives++;
 	},
 
 	// pause the game
