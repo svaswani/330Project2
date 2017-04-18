@@ -9,31 +9,12 @@ window.onload = function () {
 	app.main.init();
 };
 
-window.addEventListener("keydown", function (e) {
-	// right arrow key
-	if (e.keyCode == 39) {
-		this.moveRight = true;
-	}
-	// left arrow key
-	else if (e.keyCode == 37) {
-		this.moveLeft = true;
-	}
-});
-window.addEventListener("keyup", function (e) {
-	// right arrow key
-	if (e.keyCode == 39) {
-		this.moveRight = false;
-	}
-	// left arrow key
-	else if (e.keyCode == 37) {
-		this.moveLeft = false;
-	}
-});
 
 app.main = {
 	// properties
 	canvas: undefined,
 	ctx: undefined,
+	myKeys: undefined,
 
 	lives: 3,
 	score: 0,
@@ -72,6 +53,7 @@ app.main = {
 		this.canvas = document.getElementById("canvas");
 		this.ctx = this.canvas.getContext("2d");
 		this.gameState = this.GAME_STATE.BEGIN;
+		this.myKeys = app.myKeys;
 		this.update();
 	},
 
@@ -87,7 +69,22 @@ app.main = {
 
 		this.drawCircles(dt);
 
+		// 
+		if(this.myKeys.keydown[this.myKeys.KEYBOARD.KEY_LEFT]) {
+			this.moveLeft = true;
+		}
+
+		else {
+			this.moveLeft = false;
+		}
+
+		if(this.myKeys.keydown[this.myKeys.KEYBOARD.KEY_RIGHT]) {
+			this.moveRight = true;
+		}
 		
+		else {
+			this.moveRight = false;
+		}
 
 		//this.drawCircles();
 	},
@@ -170,12 +167,14 @@ app.main = {
 
 		// player
 		if (this.moveLeft && this.player.x > 0) {
-			console.log('key press');
+			console.log("move left");
 			this.player.x -= 7;
 		}
 		if (this.moveRight && this.player.x + this.player.size < this.canvas.width) {
+			console.log("move right");
 			this.player.x += 7;
 		}
+
 	},
 
 	// draw player to canvas
