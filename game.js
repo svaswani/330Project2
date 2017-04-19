@@ -16,6 +16,7 @@ app.main = {
 	ctx: undefined,
 	myKeys: undefined,
 	bgAudio: undefined,
+	effectAudio: undefined,
 
 	lives: 3,
 	score: 0,
@@ -58,7 +59,9 @@ app.main = {
 		this.gameState = this.GAME_STATE.BEGIN;
 		this.myKeys = app.myKeys;
 		this.bgAudio = document.querySelector("#bgAudio");
-		bgAudio.volume = 0.25;
+		this.effectAudio = document.querySelector("#effectAudio");
+		this.effectAudio.volume = 0.3;
+		this.bgAudio.volume = 0.15;
 		this.initializeCircle();
 		this.initializeCircle();
 		this.update();
@@ -95,7 +98,7 @@ app.main = {
 
 	// draws basic canvas
 	drawCanvas: function (num) {
-		this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+		//this.ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 		// game loop
 		if (this.gameState != this.GAME_STATE.END) {
@@ -261,6 +264,7 @@ app.main = {
 				this.player.y < this.fallingCircles[i].y + 5 &&
 				this.player.size + this.player.y > this.fallingCircles[i].y) {
 				this.score += 10;
+				this.effectAudio.play();
 				this.fallingCircles.splice(i, 1);
 				this.initializeCircle();
 			}
