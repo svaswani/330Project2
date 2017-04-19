@@ -28,8 +28,15 @@
 			padding: 5px 10px;
 			display: inline-block;
 		}
-		#audioControls{
+		
+		#audioControls {
 			display: none;
+		}
+		
+		#radioButton {
+			margin: auto;
+			background: #e1e1ea;
+			width: 41%;
 		}
 	</style>
 </head>
@@ -45,6 +52,13 @@
 		<audio id="bgAudio" src="bensound-jazzcomedy.mp3" controls loop></audio>
 		<audio id="effectAudio" src="slurp_sound.mp3" controls></audio>
 	</section>
+	<div id="radioButton">
+		<form action="">
+			<input type="radio" name="diff" value="easy" checked="checked"> Easy
+			<input type="radio" name="diff" value="med"> Medium
+			<input type="radio" name="diff" value="hard"> Hard
+		</form>
+	</div>
 	<script src="game.js"></script>
 	<script src="keys.js"></script>
 	<script src="loader.js"></script>

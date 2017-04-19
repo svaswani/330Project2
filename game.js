@@ -64,6 +64,7 @@ app.main = {
 		this.bgAudio.volume = 0.15;
 		this.initializeCircle();
 		this.initializeCircle();
+		
 		this.update();
 	},
 
@@ -212,7 +213,7 @@ app.main = {
 		this.fallingCircles.push({
 			x: Math.random() * canvas.width,
 			y: 0,
-			speed: Math.floor((Math.random() + 1) * 3),
+			speed: Math.floor((Math.random() + 1) ),
 			color: ["black", "purple", "white"]
 		});
 	},
@@ -220,7 +221,6 @@ app.main = {
 	// draws the circles falling
 	drawCircles: function (num) {
 
-		console.log(this.fallingCircles.length);
 
 		for (var i = 0; i < this.NUM_CIRCLES; i++) {
 			this.ctx.beginPath();
@@ -232,6 +232,12 @@ app.main = {
 
 		// circles
 		for (var i = 0; i < this.NUM_CIRCLES; i++) {
+			if(document.querySelector('input[name="diff"]:checked').value == "med"){
+				this.fallingCircles[i].speed += .3;
+			}
+			if(document.querySelector('input[name="diff"]:checked').value == "hard"){
+				this.fallingCircles[i].speed += .5;
+			}
 			this.fallingCircles[i].y = this.fallingCircles[i].y + this.fallingCircles[i].speed;
 			if (this.fallingCircles[i].y > canvas.height) {
 				this.fallingCircles.splice(i, 1);
