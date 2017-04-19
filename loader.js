@@ -17,6 +17,7 @@ var app = app || {};
 // 	app.game.init();
 // };
 
+// on blur sets off pause
 window.onblur = function() {
 	console.log("blur at " +Date());
 	app.main.pauseGame();

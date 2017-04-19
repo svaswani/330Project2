@@ -72,7 +72,7 @@ app.main = {
 		this.update();
 	},
 
-	// update function.
+	// update function
 	update: function () {
 		this.animationID = requestAnimationFrame(this.update.bind(this));
 
@@ -82,9 +82,10 @@ app.main = {
 
 		this.checkCollisions(dt);
 
+		// play background audio
 		bgAudio.play();
 
-		// checks for keypresses
+		// checks for keypresses for player movement
 		if (this.myKeys.keydown[this.myKeys.KEYBOARD.KEY_LEFT]) {
 			this.moveLeft = true;
 		}
@@ -97,6 +98,11 @@ app.main = {
 		else {
 			this.moveRight = false;
 		}
+		// power up by pressing shift and up
+		if (this.myKeys.keydown[this.myKeys.KEYBOARD.KEY_SHIFT] && this.myKeys.keydown[this.myKeys.KEYBOARD.KEY_UP]) {
+			this.score += 10;
+		}	
+
 
 		//this.drawCircles();
 	},
@@ -123,7 +129,8 @@ app.main = {
 			if (this.gameState == this.GAME_STATE.BEGIN) {
 				this.ctx.textAlign = "center";
 				this.ctx.font = "20px Verdana";
-				this.ctx.fillText("PRESS SPACE TO PLAY", this.canvas.width / 2, 475);
+				this.ctx.fillText("PRESS SPACE TO PLAY", this.canvas.width / 2, this.canvas.height / 2);
+				this.ctx.fillText("(C) Sneha & Sam aka Smanha", this.canvas.width / 2, 425);
 				if (this.myKeys.keydown[this.myKeys.KEYBOARD.KEY_SPACE]) {
 					this.gameState = this.GAME_STATE.DEFAULT;
 				}
@@ -195,6 +202,7 @@ app.main = {
 
 			this.ctx.fillText("SCORE: " + this.score, this.canvas.width / 2, 230);
 
+			// space to play again
 			if (this.myKeys.keydown[this.myKeys.KEYBOARD.KEY_SPACE]) {
 				this.gameState = this.GAME_STATE.DEFAULT;
 				this.playAgain();
@@ -215,7 +223,7 @@ app.main = {
 		return 1 / fps;
 	},
 
-	// creates falling circles
+	// creates falling circles with their properties
 	initializeCircle: function () {
 		// console.log("ADDING ONE CIRCLE");
 		this.fallingCircles.push({
@@ -229,7 +237,7 @@ app.main = {
 	// draws the circles falling
 	drawCircles: function (num) {
 
-
+		// loop through num circles
 		for (var i = 0; i < this.NUM_CIRCLES; i++) {
 			this.ctx.beginPath();
 			this.ctx.arc(this.fallingCircles[i].x, this.fallingCircles[i].y, 5, 0, 2 * Math.PI);
@@ -299,6 +307,7 @@ app.main = {
 		this.lives = 3;
 	},
 
+	// next level 
 	nextLevel: function () {
 		for(var i = this.fallingCircles.length; i >0 ;i--){
 			this.fallingCircles.pop();
