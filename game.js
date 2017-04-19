@@ -17,6 +17,7 @@ app.main = {
 	myKeys: undefined,
 	bgAudio: undefined,
 	effectAudio: undefined,
+	endAudio: undefined,
 
 	lives: 3,
 	score: 0,
@@ -60,6 +61,9 @@ app.main = {
 		this.myKeys = app.myKeys;
 		this.bgAudio = document.querySelector("#bgAudio");
 		this.effectAudio = document.querySelector("#effectAudio");
+		this.endAudio = document.querySelector("#endAudio");
+		this.endAudio.volume = 0.3;
+		
 		this.effectAudio.volume = 0.3;
 		this.bgAudio.volume = 0.15;
 		this.initializeCircle();
@@ -177,6 +181,10 @@ app.main = {
 
 		// draws game over screen
 		else {
+			this.bgAudio.pause();
+			this.bgAudio.currentTime = 0;
+			this.endAudio.play();
+			
 			this.ctx.fillStyle = "black";
 			this.ctx.font = "35px Dosis";
 			this.ctx.textAlign = "center";
@@ -306,6 +314,7 @@ app.main = {
 
 	// pause the game
 	pauseGame: function () {
+		this.bgAudio.pause();
 		this.paused = true;
 		cancelAnimationFrame(this.animationID);
 		this.update();
